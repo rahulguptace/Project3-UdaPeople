@@ -138,7 +138,6 @@ jobs:
 
   deploy-infrastructure:
     executor: aws-cli/default
-    working_directory: .circleci/ansible/
     steps:
       - checkout
       - run:
