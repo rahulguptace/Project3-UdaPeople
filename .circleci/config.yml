@@ -142,7 +142,7 @@ jobs:
       - checkout
       - run:
           name: install-tar-gzip
-          command: yum -y install tar gzip
+          command: sudo apt-get -y install tar gzip
       - aws-cli/setup:
           aws-access-key-id: AWS_ACCESS_KEY
           aws-secret-access-key: AWS_ACCESS_SECRET
