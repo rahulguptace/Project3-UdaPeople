@@ -165,11 +165,11 @@ jobs:
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  
       - run: aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' 
           --filters "Name=tag:Project,Values=udapeople" 
-          --output text >> /home/circleci/ansible/inventory.txt
+          --output text >> ./ansible/inventory.txt
       - persist_to_workspace:
-          root: ~/
+          root: .
           paths:
-            - .circleci/ansible/inventory.txt
+            - /ansible/inventory.txt
       # Here's where you will add some code to rollback on failure   
       - destroy-environment   
 
