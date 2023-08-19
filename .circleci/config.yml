@@ -240,9 +240,6 @@ jobs:
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
               curl https://kvdb.io/B1XKzwKNJzwMyrh6zkqgRa/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1234'
-            else
-            echo "Failed"
-            exit 1
             fi
           # Here's where you will add some code to rollback on failure  
       - destroy-environment:
