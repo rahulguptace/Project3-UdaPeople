@@ -191,10 +191,10 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            sudo apt-get update
-            sudo apt-get -y install tar gzip
+            apt-get update
+            apt-get -y install tar gzip
             apk add --update ansible
-            sudo apt-get -y install awscli
+            apt-get -y install awscli
       - run:
           name: Configure server
           command: |
