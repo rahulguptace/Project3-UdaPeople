@@ -211,6 +211,17 @@ jobs:
       - run:
           name: Configure server
           command: |
+            echo ENVIRONMENT=production > backend/.env
+            echo TYPEORM_CONNECTION=postgres >> backend/.env
+            echo TYPEORM_MIGRATIONS_DIR=./src/migrations >> backend/.env
+            echo TYPEORM_ENTITIES=./src/modules/domain/**/*.entity.ts >> backend/.env
+            echo TYPEORM_MIGRATIONS=./src/migrations/*.ts >> backend/.env
+            echo TYPEORM_HOST=$TYPEORM_HOST >> "backend/.env"
+            echo TYPEORM_PORT=$TYPEORM_PORT >> "backend/.env"
+            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> "backend/.env"
+            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "backend/.env"
+            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env" 
+            cat backend/.env
             cd .circleci/ansible
             ansible-playbook -i inventory.txt configure-server.yml
       # Here's where you will add some code to rollback on failure 
@@ -239,6 +250,7 @@ jobs:
           command: |
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
+              echo "Successful"
               curl https://kvdb.io/B1XKzwKNJzwMyrh6zkqgRa/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1234'
             fi
           # Here's where you will add some code to rollback on failure  
@@ -258,7 +270,7 @@ jobs:
             sudo apt-get -y install tar gzip
             sudo apt-get -y install awscli
             sudo apt-get -y install nodejs
-            sudo apt-get -y install npm
+            sudo npm install npm -g
             sudo apt-get -y install python3
             sudo apt-get -y install ansible
       - run:
