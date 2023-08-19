@@ -38,103 +38,115 @@ commands:
 #             fi
             
 jobs:
-  # build-frontend:
-  #   docker:
-  #     - image: circleci/node:13.8.0
-  #   steps:
-  #     - checkout
-  #     - restore_cache:
-  #         keys: [frontend-build]
-  #     - run:
-  #         name: Build front-end
-  #         command: |
-  #           cd frontend
-  #           npm install
-  #           npm run build
-  #         # Commented below to successfully execute the job
-  #         # exit 1
-  #     - save_cache:
-  #         paths: [frontend/node_modules]
-  #         key: frontend-build
+  build-frontend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [frontend-build]
+      - run:
+          name: Build front-end
+          command: |
+            cd frontend
+            npm install
+            npm run build
+          # Commented below to successfully execute the job
+          # exit 1
+      - save_cache:
+          paths: [frontend/node_modules]
+          key: frontend-build
 
-  # build-backend:
-  #   docker:
-  #     - image: circleci/node:13.8.0
-  #   steps:
-  #     - checkout
-  #     - restore_cache:
-  #         keys: [backend-build]
-  #     - run:
-  #         name: Back-end build
-  #         command: |
-  #           cd backend
-  #           npm install
-  #           npm run build
-  #         # Commented below to successfully execute the job
-  #         # exit 1
-  #     - save_cache:
-  #         paths: [backend/node_modules]
-  #         key: backend-build
+  build-backend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [backend-build]
+      - run:
+          name: Back-end build
+          command: |
+            cd backend
+            npm install
+            npm run build
+          # Commented below to successfully execute the job
+          # exit 1
+      - save_cache:
+          paths: [backend/node_modules]
+          key: backend-build
 
-  # test-frontend:
-  #   docker:
-  #     - image: circleci/node:13.8.0
-  #   steps:
-  #     - checkout
-  #     - restore_cache:
-  #         keys: [frontend-build]
-  #     - run:
-  #         name: front-end test
-  #         command: |
-  #           cd frontend
-  #           npm install
-  #           npm run test
+  test-frontend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [frontend-build]
+      - run:
+          name: front-end test
+          command: |
+            cd frontend
+            npm install
+            npm run test
+      - save_cache:
+          paths: [frontend/node_modules]
+          key: frontend-build
                 
-  # test-backend:
-  #   docker:
-  #     - image: circleci/node:13.8.0
-  #   steps:
-  #     - checkout
-  #     - restore_cache:
-  #         keys: [backend-build]
-  #     - run:
-  #         name: Back-end test
-  #         command: |
-  #           cd backend
-  #           npm install
-  #           npm run test
+  test-backend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [backend-build]
+      - run:
+          name: Back-end test
+          command: |
+            cd backend
+            npm install
+            npm run test
+      - save_cache:
+          paths: [backend/node_modules]
+          key: backend-build
             
-  # scan-frontend:
-  #   docker:
-  #     - image: circleci/node:13.8.0
-  #   steps:
-  #     - checkout
-  #     - restore_cache:
-  #         keys: [frontend-build]
-  #     - run:
-  #         name: front-end scan
-  #         command: |
-  #           cd frontend
-  #           npm install
-  #           npm audit fix --audit-level=critical --force
-  #           npm audit fix --force
-  #           npm audit --audit-level=critical
+  scan-frontend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [frontend-build]
+      - run:
+          name: front-end scan
+          command: |
+            cd frontend
+            npm install
+            npm audit fix --audit-level=critical --force
+            npm audit fix --force
+            npm audit --audit-level=critical
+      - save_cache:
+          paths: [frontend/node_modules]
+          key: frontend-build
 
-  # scan-backend:
-  #   docker:
-  #     - image: circleci/node:13.8.0
-  #   steps:
-  #     - checkout
-  #     - restore_cache:
-  #         keys: [backend-build]
-  #     - run:
-  #         name: Back-end scan
-  #         command: |
-  #           cd backend
-  #           npm install
-  #           npm audit fix --audit-level=critical --force
-  #           npm audit fix --force
-  #           npm audit --audit-level=critical
+  scan-backend:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [backend-build]
+      - run:
+          name: Back-end scan
+          command: |
+            cd backend
+            npm install
+            npm audit fix --audit-level=critical --force
+            npm audit fix --force
+            npm audit --audit-level=critical
+      - save_cache:
+          paths: [backend/node_modules]
+          key: backend-build
 
   deploy-infrastructure:
     executor: aws-cli/default
@@ -167,7 +179,7 @@ jobs:
       - run: aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' 
           --filters "Name=tag:Project,Values=udapeople" 
           --output text >> .circleci/ansible/inventory.txt
-      - run: cat .circleci/ansible/inventory.txt
+      # - run: cat .circleci/ansible/inventory.txt
       - persist_to_workspace:
           root: ~/
           paths:
@@ -334,21 +346,21 @@ jobs:
 workflows:
   default:
     jobs:
-      # - build-frontend
-      # - build-backend
-      # - test-frontend:
-      #     requires: [build-frontend]
-      # - test-backend:
-      #     requires: [build-backend]
-      # - scan-backend:
-      #     requires: [build-backend]
-      # - scan-frontend:
-      #     requires: [build-frontend]
+      - build-frontend
+      - build-backend
+      - test-frontend:
+          requires: [build-frontend]
+      - test-backend:
+          requires: [build-backend]
+      - scan-backend:
+          requires: [build-backend]
+      - scan-frontend:
+          requires: [build-frontend]
       - deploy-infrastructure
-      #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-      #     filters:
-      #       branches:
-      #         only: [test-feature-branch]
+          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+          filters:
+            branches:
+              only: [master]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
       - run-migrations:
