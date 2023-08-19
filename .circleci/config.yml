@@ -7,16 +7,16 @@ commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
-      # Add parameter here   
+      workflow_id:
+        type: String  
     steps:
       - run:
           name: Destroy environments
           when: on_fail
           command: |
-            aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-            aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
-            aws cloudformation delete-stack --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
-            exit 1
+            aws s3 rm s3://udapeople-<<parameters.workflow_id>> --recursive
+            aws cloudformation delete-stack --stack-name udapeople-backend-<<parameters.workflow_id>>
+            aws cloudformation delete-stack --stack-name udapeople-frontend-<<parameters.workflow_id>>
 
 #   revert-migrations:
 #     description: Revert the last migration if successfully run in the current workflow.
@@ -163,36 +163,46 @@ jobs:
               --tags Project=udapeople \
               --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  
-      - run: echo "[Web]" > inventory.txt
+      # - run: echo "[Web]" > inventory.txt
       - run: aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' 
           --filters "Name=tag:Project,Values=udapeople" 
-          --output text >> inventory.txt
-      - run: cat inventory.txt
+          --output text >> .circleci/ansible/inventory.txt
+      - run: cat .circleci/ansible/inventory.txt
       - persist_to_workspace:
-          root: .
+          root: ~/
           paths:
-            - inventory.txt
+            - project/.circleci/ansible/inventory.txt
+      - run: exit 1
       # Here's where you will add some code to rollback on failure   
-      - destroy-environment   
+      - destroy-environment
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
 
-#   configure-infrastructure:
-#     docker:
-#       # Docker image here that supports Ansible
-#     steps:
-#       # Checkout code from git
-#       # Add ssh keys with fingerprint
-#       # attach workspace
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # Your code here
-#             exit 1
-#       - run:
-#           name: Configure server
-#           command: |
-#             # Your code here
-#             exit 1
-#       # Here's where you will add some code to rollback on failure      
+  # configure-infrastructure:
+  #   docker:
+  #     - image: python:3.10.12-alpine3.18
+  #   steps:
+  #     - checkout
+  #     # Add ssh keys with fingerprint
+  #     - add_ssh_keys:
+  #         # You can get this ID in the section where you registered the SSH Key
+  #         fingerprints: ["2c:21:d9:a0:79:d5:86:77:f9:2a:b9:ff:1d:62:3d:9b"] 
+  #     # attach workspace
+  #     - attach_workspace:
+  #         at: .
+  #     - run:
+  #         name: Install dependencies
+  #         command: |
+  #           sudo apt-get update
+  #           sudo apt-get -y install tar gzip
+  #           apk add --update ansible
+  #           sudo apt-get -y install awscli
+  #     - run:
+  #         name: Configure server
+  #         command: |
+  #           cd .circleci/ansible
+  #           ansible-playbook -i inventory configure-server.yml
+  #     # Here's where you will add some code to rollback on failure 
+  #     - destroy-environment      
 
 #   run-migrations:
 #     docker:
