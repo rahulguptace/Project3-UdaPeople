@@ -12,6 +12,7 @@
 
 - name: "Install Dependencies"
   shell: |
+    pwd
     cd /home/ubuntu/backend
     npm install
 
