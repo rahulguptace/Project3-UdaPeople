@@ -1,0 +1,28 @@
+---
+- name: "Copy the zip file to EC2 instance"
+  copy:
+    src: /root/project/artifact.tar.gz
+    dest: /home/ubuntu
+
+- name: "unarchive directory"
+  unarchive:
+    src: /home/ubuntu/artifact.tar.gz
+    dest: /home/ubuntu
+    copy: no
+
+- name: "Install Dependencies"
+  shell: |
+    cd /home/ubuntu/backend
+    npm install
+
+- name: "Stop PM2"
+  shell: |
+    cd /home/ubuntu/backend
+    pm2 stop default
+
+- name: "Start the backend app"
+  shell: |
+    cd /home/ubuntu/backend
+    pm2 start npm -- start
+
+    
