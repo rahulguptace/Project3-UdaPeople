@@ -32,7 +32,7 @@
     "@types/react-table": "^6.8.4",
     "@types/react-toastify": "^4.0.2",
     "@types/redux-actions": "2.6.1",
-    "@types/webpack": "4.4.34",
+    "@types/webpack": "5.28.1",
     "@types/webpack-env": "1.13.9",
     "babel-core": "^6.26.3",
     "babel-loader": "^8.0.6",
