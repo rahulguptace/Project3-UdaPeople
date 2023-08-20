@@ -330,15 +330,11 @@ jobs:
           command: |
             apk add --update curl nodejs npm aws-cli
       - run:
-          name: Get backend url
+          name: Backend smoke test
           command: |
             export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters "Name=tag:Project,Values=udapeople" --output text) 
             export API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}"
-      - run:
-          name: Backend smoke test.
-          command: |
             echo "${API_URL}"
             if curl "${API_URL}/api/status" | grep "ok"
             then
