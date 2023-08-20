@@ -273,7 +273,7 @@ jobs:
             sudo apt-get update
             sudo apt-get -y install tar gzip
             sudo apt-get -y install awscli
-            sudo apt-get -y install nodejs
+            sudo apt-get -y install nodejs 
             sudo npm install npm -g
             sudo apt-get -y install python3
             sudo apt-get -y install ansible
@@ -292,6 +292,7 @@ jobs:
             npm install
             npm update
             npm run build
+            npm audit fix --force
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       - destroy-environment:
