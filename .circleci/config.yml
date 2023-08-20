@@ -336,7 +336,6 @@ jobs:
               --filters "Name=tag:Project,Values=udapeople" --output text) 
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}"
-            
       - run:
           name: Backend smoke test.
           command: |
@@ -360,7 +359,10 @@ jobs:
             else
               return 1
             fi
-      # Here's where you will add some code to rollback on failure  
+      # - destroy-environment:
+      #     workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}" 
+      # - revert-migrations:
+      #     workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"  
 
 #   cloudfront-update:
 #     docker:
@@ -410,21 +412,21 @@ workflows:
       #     requires: [build-backend]
       # - scan-frontend:
       #     requires: [build-frontend]
-      - deploy-infrastructure
+      # - deploy-infrastructure
           # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           # filters:
           #   branches:
           #     only: [master]
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-      - run-migrations:
-          requires: [configure-infrastructure]
+      # - configure-infrastructure:
+      #     requires: [deploy-infrastructure]
+      # - run-migrations:
+      #     requires: [configure-infrastructure]
       # - deploy-frontend
           # requires: [run-migrations]
-      - deploy-backend:
-          requires: [run-migrations]
-      # - smoke-test:
-      #     requires: [deploy-backend, deploy-frontend]
+      # - deploy-backend:
+      #     requires: [run-migrations]
+      - smoke-test
+          # requires: [deploy-backend]
       # - cloudfront-update:
       #     requires: [smoke-test]
       # - cleanup:
