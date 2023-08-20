@@ -270,12 +270,9 @@ jobs:
       - run:
           name: Install dependencies
           command: |
+            sudo apt-get update
             sudo apt-get -y install tar gzip
             sudo apt-get -y install awscli
-            sudo npm install npm -g
-            sudo npm install node@16.0.0
-            sudo apt-get -y install python3
-            sudo apt-get -y install ansible
       - run:
           name: Get backend url
           command: |
