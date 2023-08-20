@@ -15,6 +15,7 @@
     pwd
     cd /home/ubuntu/backend
     npm install
+    npm run build
 
 - name: "Stop PM2"
   shell: |
