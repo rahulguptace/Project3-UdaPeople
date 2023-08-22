@@ -246,42 +246,45 @@ jobs:
       - destroy-environment:
           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"     
 
-  # deploy-frontend:
-  #   executor: aws-cli/default
-  #   steps:
-  #     - checkout
-  #     - attach_workspace:
-  #         at: ~/
-  #     - aws-cli/setup:
-  #         aws-access-key-id: AWS_ACCESS_KEY_ID
-  #         aws-secret-access-key: AWS_SECRET_ACCESS_KEY
-  #         aws-region: AWS_DEFAULT_REGION
-  #     - run:
-  #         name: Install dependencies
-  #         command: |
-  #           sudo apt-get update
-  #           sudo apt-get -y install tar gzip
-  #           sudo apt-get -y install awscli
-  #     - run:
-  #         name: Get backend url
-  #         command: |
-  #           export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' \
-  #             --filters "Name=tag:Project,Values=udapeople" --output text) 
-  #           export API_URL="http://${BACKEND_IP}:3030"
-  #           echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
-  #           echo "${API_URL}"
-  #     - run:
-  #         name: Deploy frontend objects
-  #         command: |
-  #           cd frontend
-  #           npm install
-  #           npm run build
-  #           tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
-  #           aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-      # - destroy-environment:
-      #     workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}" 
-      # - revert-migrations:
-      #     workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"          
+  deploy-frontend:
+    docker:
+      - image: python:3.10.12-alpine3.18
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/
+      - aws-cli/setup:
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          aws-region: AWS_DEFAULT_REGION
+      - run:
+          name: Install dependencies
+          command: |
+            apk update
+            apk upgrade
+            apk add --update tar gzip
+            apk add --update ansible
+            apk add --update aws-cli
+      - run:
+          name: Get backend url
+          command: |
+            export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters "Name=tag:Project,Values=udapeople" --output text) 
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
+            echo "${API_URL}"
+      - run:
+          name: Deploy frontend objects
+          command: |
+            cd frontend
+            npm install
+            npm run build
+            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
+            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+      - destroy-environment:
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}" 
+      - revert-migrations:
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"          
                     
   deploy-backend:
     docker:
@@ -408,20 +411,20 @@ workflows:
       #     requires: [build-backend]
       # - scan-frontend:
       #     requires: [build-frontend]
-      # - deploy-infrastructure
+      - deploy-infrastructure
           # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           # filters:
           #   branches:
           #     only: [master]
-      # - configure-infrastructure:
-      #     requires: [deploy-infrastructure]
-      # - run-migrations:
-      #     requires: [configure-infrastructure]
-      # - deploy-frontend
-          # requires: [run-migrations]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
+      - run-migrations:
+          requires: [configure-infrastructure]
+      - deploy-frontend:
+          requires: [run-migrations]
       # - deploy-backend:
       #     requires: [run-migrations]
-      - smoke-test
+      # - smoke-test
           # requires: [deploy-backend]
       # - cloudfront-update:
       #     requires: [smoke-test]
