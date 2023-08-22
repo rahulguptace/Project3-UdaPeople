@@ -226,6 +226,8 @@ jobs:
       - checkout
       - restore_cache:
           keys: [backend-build-v1]
+      - attach_workspace:
+          at: ~/
       # - run:
       #     name: Install aws-cli
       #     command:
@@ -248,8 +250,8 @@ jobs:
               curl https://kvdb.io/24m9whoPmTpqmTRErf2Fp4/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1234'
             fi
           # Here's where you will add some code to rollback on failure  
-      - destroy-environment:
-          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"     
+      # - destroy-environment:
+      #     workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"     
 
   deploy-frontend:
     docker:
@@ -265,10 +267,11 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update tar gzip
-            apk add --update ansible
-            apk add --update aws-cli
-            apk add --update curl
+            apt-get install tar -y
+            apt-get install gzip -y
+            apt-get install awscli -y
+            apt-get install curl -y
+            apt-get install ansible -y
       - run:
           name: Get backend url
           command: |
