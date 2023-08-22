@@ -4,15 +4,19 @@
     src: /root/project/artifact.tar.gz
     dest: /home/ubuntu
 
+- name: "Create backend app directory"
+  file:
+    path: /home/ubuntu/backend
+    state: directory
+
 - name: "unarchive directory"
   unarchive:
     src: /home/ubuntu/artifact.tar.gz
-    dest: /home/ubuntu
+    dest: /home/ubuntu/backend
     copy: no
 
 - name: "Install Dependencies"
   shell: |
-    pwd
     cd /home/ubuntu/backend
     npm install
     npm run build
