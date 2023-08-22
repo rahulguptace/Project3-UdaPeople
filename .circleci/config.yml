@@ -269,8 +269,9 @@ jobs:
           command: |
             sudo apt-get install tar -y
             sudo apt-get install gzip -y
+            sudo apt-get install python -y
             sudo apt-get install awscli -y
-            sudo apt-get install curl -y
+            sudo apt-get install curl -y            
             sudo apt-get install ansible -y
       - run:
           name: Get backend url
