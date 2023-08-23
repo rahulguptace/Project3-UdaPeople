@@ -371,7 +371,7 @@ jobs:
             aws cloudformation \
               list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
               --no-paginate --output text > ~/OldWorkFlow.txt
-            cat OldWorkFlow.txt            
+            cat ~/OldWorkFlow.txt            
       - persist_to_workspace:
           root: ~/
           paths:
@@ -435,22 +435,22 @@ workflows:
       #     requires: [build-backend]
       # - scan-frontend:
       #     requires: [build-frontend]
-      - deploy-infrastructure
+      # - deploy-infrastructure
       #     # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
       #     # filters:
       #     #   branches:
       #     #     only: [master]
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-      - run-migrations:
-          requires: [configure-infrastructure]
-      - deploy-frontend:
-          requires: [run-migrations]
-      - deploy-backend:
-          requires: [run-migrations]
-      - smoke-test:
-          requires: [deploy-backend, deploy-frontend]
-      - cloudfront-update:
-          requires: [smoke-test]
+      # - configure-infrastructure:
+      #     requires: [deploy-infrastructure]
+      # - run-migrations:
+      #     requires: [configure-infrastructure]
+      # - deploy-frontend:
+      #     requires: [run-migrations]
+      # - deploy-backend:
+      #     requires: [run-migrations]
+      # - smoke-test:
+      #     requires: [deploy-backend, deploy-frontend]
+      - cloudfront-update
+          # requires: [smoke-test]
       - cleanup:
           requires: [cloudfront-update]
