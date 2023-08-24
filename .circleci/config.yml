@@ -35,7 +35,9 @@ commands:
             then
               echo "Inside then"
               cd ~/project/backend
+              echo "post cd"
               npm install
+              echo "Post install"
               npm run migrations:revert
             fi
             
@@ -418,7 +420,9 @@ jobs:
             if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${OldWorkFlowID}" ]]
             then
               echo "-------------------Delete Confirmed------------------------"
-              aws s3 rm "s3://udapeople-${OldWorkFlowID}" --recursive
+              echo udapeople-${OldWorkFlowID}
+              aws s3 rm s3://udapeople-${OldWorkFlowID} --recursive
+              echo "post s3"
               aws cloudformation delete-stack --stack-name udapeople-backend-${OldWorkFlowID}
               aws cloudformation delete-stack --stack-name udapeople-frontend-${OldWorkFlowID}
             else
@@ -457,15 +461,15 @@ workflows:
       #     filters:
       #       branches:
       #         only: [dev]
-      # - deploy-infrastructure
+      - deploy-infrastructure
           # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
           # filters:
           #   branches:
           #     only: [master]
-      # - configure-infrastructure:
-      #     requires: [deploy-infrastructure]
-      - run-migrations
-          # requires: [configure-infrastructure]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
+      - run-migrations:
+          requires: [configure-infrastructure]
       - deploy-frontend:
           requires: [run-migrations]
       - deploy-backend:
