@@ -402,7 +402,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apt-get -y install tar gzip
+            yum -y install tar gzip
       - attach_workspace:
           at: ~/
       - run:
