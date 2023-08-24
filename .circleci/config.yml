@@ -29,9 +29,11 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
-            SUCCESS=$(curl --insecure https://kvdb.io/Hqbj2E7MXJdGoGHExN1vSG/migration_<< parameters.workflow_id >>)
+            echo << parameters.workflow_id >>
+            echo ${CIRCLE_WORKFLOW_ID:0:7}
+            SUCCESS=$(curl --insecure https://kvdb.io/Pr6JbPGBHyGgjGUFN8pMfW/migration_<< parameters.workflow_id >>)
             echo $SUCCESS
-            if (( $SUCCESS == 123 ));
+            if (( $SUCCESS == 1 ));
             then
               echo "Inside then"
               cd ~/project/backend
@@ -232,7 +234,7 @@ jobs:
             if grep -q "No migrations are pending" ~/project/backend/migrations_dump.txt
             then
               echo "Successful"
-              curl -k https://kvdb.io/Hqbj2E7MXJdGoGHExN1vSG/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '123'
+              curl -k https://kvdb.io/Pr6JbPGBHyGgjGUFN8pMfW/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
       - destroy-environment:
           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"     
