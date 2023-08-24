@@ -33,7 +33,7 @@ commands:
             echo ${CIRCLE_WORKFLOW_ID:0:7}
             SUCCESS=$(curl --insecure https://kvdb.io/Pr6JbPGBHyGgjGUFN8pMfW/migration_<< parameters.workflow_id >>)
             echo $SUCCESS
-            if (( $SUCCESS == 1 ))
+            if [[ $SUCCESS == 1 ]];
             then
               echo "Inside then"
               cd ~/project/backend
