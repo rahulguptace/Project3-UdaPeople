@@ -427,50 +427,32 @@ jobs:
 workflows:
   default:
     jobs:
-      # - build-frontend:
-      #     filters:
-      #       branches:
-      #         only: [dev]      
-      # - build-backend:
-      #     filters:
-      #       branches:
-      #         only: [dev]
+      # - build-frontend
+      # - build-backend
       # - test-frontend:
       #     requires: [build-frontend]
-      #     filters:
-      #       branches:
-      #         only: [dev]
       # - test-backend:
       #     requires: [build-backend]
-      #     filters:
-      #       branches:
-      #         only: [dev]
       # - scan-backend:
       #     requires: [build-backend]
-      #     filters:
-      #       branches:
-      #         only: [dev]
       # - scan-frontend:
       #     requires: [build-frontend]
-      #     filters:
-      #       branches:
-      #         only: [dev]
-      - deploy-infrastructure
+      # - deploy-infrastructure
       #     # requires: [test-frontend, test-backend, scan-frontend, scan-backend]
       #     # filters:
       #     #   branches:
       #     #     only: [master]
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
-      - run-migrations:
-          requires: [configure-infrastructure]
-      - deploy-frontend:
-          requires: [run-migrations]
-      - deploy-backend:
-          requires: [run-migrations]
-      - smoke-test:
-          requires: [deploy-backend, deploy-frontend]
-      - cloudfront-update:
-          requires: [smoke-test]
-      - cleanup:
-          requires: [cloudfront-update]
+      # - configure-infrastructure:
+      #     requires: [deploy-infrastructure]
+      # - run-migrations:
+      #     requires: [configure-infrastructure]
+      # - deploy-frontend:
+      #     requires: [run-migrations]
+      # - deploy-backend:
+      #     requires: [run-migrations]
+      # - smoke-test:
+      #     requires: [deploy-backend, deploy-frontend]
+      # - cloudfront-update:
+      #     requires: [smoke-test]
+      - cleanup
+          # requires: [cloudfront-update]
