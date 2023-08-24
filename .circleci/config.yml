@@ -35,11 +35,8 @@ commands:
             echo $SUCCESS
             if [[ $SUCCESS == 1 ]];
             then
-              echo "Inside then"
               cd ~/project/backend
-              echo "post cd"
               npm install
-              echo "Post install"
               npm run migrations:revert
             fi
             
@@ -406,15 +403,11 @@ jobs:
       - attach_workspace:
           at: ~/
       - run:
-          name: Get old stack/workflow id and delete asoocaited resources
+          name: Get old stack/workflow id and delete associated resources
           command: |
-            export OldWorkFlowID=$(cat ~/OldWorkFlow.txt)
+            export OldWorkFlowID=750123031425
             echo OldWorkFlowID: "${OldWorkFlowID}"
             echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:7}"
-
-            export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
-              --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
-            echo Stack names: "${STACKS[@]}"
 
             if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${OldWorkFlowID}" ]]
             then
