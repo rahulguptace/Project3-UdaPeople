@@ -413,9 +413,7 @@ jobs:
             then
               echo "-------------------Delete Confirmed------------------------"
               echo udapeople-${OldWorkFlowID}
-              echo "s3://udapeople-${OldWorkFlowID}"
               aws s3 rm "s3://udapeople-${OldWorkFlowID}" --recursive
-              echo "post s3"
               aws cloudformation delete-stack --stack-name udapeople-backend-${OldWorkFlowID}
               aws cloudformation delete-stack --stack-name udapeople-frontend-${OldWorkFlowID}
             else
